@@ -101,10 +101,10 @@ namespace Lab.Controllers
                 Id = demand.Id,
                 LowerBorder = demand.LowerBorder,
                 Test = demand.Test,
-                TestId = demand.Test.Id.ToString(),
                 UpperBorder = demand.UpperBorder,
                 Tests = _context.Tests.Select(x => new SelectListItem()
                 {
+                    Selected = x.Id == demand.Test.Id,
                     Text = x.TestName,
                     Value = x.Id.ToString()
                 })

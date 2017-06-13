@@ -21,8 +21,7 @@ namespace Lab.Controllers
         // GET: Conductings
         public async Task<IActionResult> Index()
         {
-            
-            return View(await _context.Conductings.ToListAsync());
+            return View(await _context.Conductings.Include(x => x.Patient).Include(x => x.Test).ToListAsync());
         }
 
         // GET: Conductings/Details/5
@@ -33,7 +32,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var conducting = await _context.Conductings
+            var conducting = await _context.Conductings.Include(x=> x.Patient).Include(x => x.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (conducting == null)
             {
@@ -46,7 +45,20 @@ namespace Lab.Controllers
         // GET: Conductings/Create
         public IActionResult Create()
         {
-            return View();
+            var d = new Lab.Models.ViewModels.ViewConducting()
+            {
+                Tests = _context.Tests.Select(x => new SelectListItem()
+                {
+                    Text = x.TestName,
+                    Value = x.Id.ToString()
+                }),
+                Patients = _context.Patients.Select(x => new SelectListItem()
+                {
+                    Text = x.FirstName + " " + x.Lastname,
+                    Value = x.Id.ToString()
+                })
+            };
+            return View(d);
         }
 
         // POST: Conductings/Create
@@ -54,10 +66,30 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TestDate,Comments")] Conducting conducting)
+        public async Task<IActionResult> Create([Bind("Id,TestDate,Comments")] Conducting conducting, int Tests, int Patients)
         {
             if (ModelState.IsValid)
             {
+
+                var Test = await _context.Tests.SingleOrDefaultAsync(x => x.Id == Tests);
+                if (Test != null)
+                {
+                    conducting.Test = Test;
+                }
+                else
+                {
+                    NotFound();
+                }
+                var Patient = await _context.Patients.SingleOrDefaultAsync(x => x.Id == Patients);
+                if (Patient != null)
+                {
+                    conducting.Patient = Patient;
+                }
+                else
+                {
+                    NotFound();
+                }
+
                 _context.Add(conducting);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -72,13 +104,35 @@ namespace Lab.Controllers
             {
                 return NotFound();
             }
+            
+            var conducting = await _context.Conductings.Include(x => x.Patient).Include(x => x.Test).SingleOrDefaultAsync(m => m.Id == id);
 
-            var conducting = await _context.Conductings.SingleOrDefaultAsync(m => m.Id == id);
             if (conducting == null)
             {
                 return NotFound();
             }
-            return View(conducting);
+
+            var d = new Lab.Models.ViewModels.ViewConducting()
+            {
+                Comments = conducting.Comments,
+                Id = conducting.Id,
+                Patient = conducting.Patient,
+                Test = conducting.Test,
+                Tests = _context.Tests.Select(x => new SelectListItem()
+                {
+                    Selected = x.Id == conducting.Test.Id,
+                    Text = x.TestName,
+                    Value = x.Id.ToString()
+                }),
+                Patients = _context.Patients.Select(x => new SelectListItem()
+                {
+                    Selected = x.Id == conducting.Patient.Id,
+                    Text = x.FirstName+" "+x.Lastname,
+                    Value = x.Id.ToString()
+                })
+            };
+
+            return View(d);
         }
 
         // POST: Conductings/Edit/5
@@ -86,7 +140,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TestDate,Comments")] Conducting conducting)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TestDate,Comments")] Conducting conducting, int Tests, int Patients)
         {
             if (id != conducting.Id)
             {
@@ -97,6 +151,25 @@ namespace Lab.Controllers
             {
                 try
                 {
+                    var Test = await _context.Tests.SingleOrDefaultAsync(x => x.Id == Tests);
+                    if (Test != null)
+                    {
+                        conducting.Test = Test;
+                    }
+                    else
+                    {
+                        NotFound();
+                    }
+                    var Patient = await _context.Patients.SingleOrDefaultAsync(x => x.Id == Patients);
+                    if (Patient != null)
+                    {
+                        conducting.Patient = Patient;
+                    }
+                    else
+                    {
+                        NotFound();
+                    }
+
                     _context.Update(conducting);
                     await _context.SaveChangesAsync();
                 }
@@ -124,7 +197,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var conducting = await _context.Conductings
+            var conducting = await _context.Conductings.Include(x => x.Patient).Include(x => x.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (conducting == null)
             {

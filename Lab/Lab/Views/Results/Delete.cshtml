@@ -13,6 +13,42 @@
     <dl class="dl-horizontal">
         <input type="hidden" asp-for="Id" />
         <dt>
+            @Html.DisplayNameFor(model => model.Conducting.Patient.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Conducting.Patient.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Conducting.Patient.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Conducting.Patient.Lastname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Demand.DemandName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Demand.DemandName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Demand.LowerBorder)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Demand.LowerBorder)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Demand.UpperBorder)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Demand.UpperBorder)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Comment)
         </dt>
         <dd>

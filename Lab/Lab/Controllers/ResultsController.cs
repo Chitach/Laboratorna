@@ -14,15 +14,15 @@ namespace Lab.Controllers
     [Authorize]
     public class ResultsController : DefaultController
     {
-        public ResultsController(ApplicationDbContext context):base(context)
+        public ResultsController(ApplicationDbContext context) : base(context)
         {
         }
 
         // GET: Results
         public async Task<IActionResult> Index()
         {
-            var s = await _context.Results.ToListAsync();
-            return View(s);
+            var d = await _context.Results.Include(x => x.Conducting).Include(x => x.Demand).Include(x => x.Conducting.Patient).Include(x => x.Conducting.Test).ToListAsync();
+            return View(d);
         }
 
         // GET: Results/Details/5
@@ -33,7 +33,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var result = await _context.Results
+            var result = await _context.Results.Include(x => x.Conducting).Include(x => x.Demand).Include(x => x.Conducting.Patient).Include(x => x.Conducting.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (result == null)
             {
@@ -46,7 +46,20 @@ namespace Lab.Controllers
         // GET: Results/Create
         public IActionResult Create()
         {
-            return View();
+            var d = new Lab.Models.ViewModels.ViewResult()
+            {
+                Conductings = _context.Conductings.Select(x => new SelectListItem()
+                {
+                    Text = x.Patient.Lastname + " " + x.TestDate.ToString() + " " + x.Test.TestName,
+                    Value = x.Id.ToString()
+                }),
+                Demands = _context.Demands.Select(x => new SelectListItem()
+                {
+                    Text = x.DemandName,
+                    Value = x.Id.ToString()
+                })
+            };
+            return View(d);
         }
 
         // POST: Results/Create
@@ -54,10 +67,29 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Comment")] Result result)
+        public async Task<IActionResult> Create([Bind("Id,Comment")] Result result, int Conductings, int Demands)
         {
             if (ModelState.IsValid)
             {
+                var Conducting = await _context.Conductings.SingleOrDefaultAsync(x => x.Id == Conductings);
+                if (Conducting != null)
+                {
+                    result.Conducting = Conducting;
+                }
+                else
+                {
+                    NotFound();
+                }
+                var Demand = await _context.Demands.SingleOrDefaultAsync(x => x.Id == Demands);
+                if (Demand != null)
+                {
+                    result.Demand = Demand;
+                }
+                else
+                {
+                    NotFound();
+                }
+
                 _context.Add(result);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -73,12 +105,33 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var result = await _context.Results.SingleOrDefaultAsync(m => m.Id == id);
+            var result = await _context.Results.Include(x => x.Conducting).Include(x => x.Demand).Include(x => x.Conducting.Patient).Include(x => x.Conducting.Test).SingleOrDefaultAsync(m => m.Id == id);
             if (result == null)
             {
                 return NotFound();
             }
-            return View(result);
+
+
+            var d = new Lab.Models.ViewModels.ViewResult()
+            {
+                Comment = result.Comment,
+                Conducting = result.Conducting,
+                Demand = result.Demand,
+                Id = result.Id,
+                Value = result.Value,
+                Conductings = _context.Conductings.Select(x => new SelectListItem()
+                {
+                    Text = x.Patient.Lastname + " " + x.TestDate.ToString() + " " + x.Test.TestName,
+                    Value = x.Id.ToString()
+                }),
+                Demands = _context.Demands.Select(x => new SelectListItem()
+                {
+                    Text = x.DemandName,
+                    Value = x.Id.ToString()
+                })
+            };
+
+            return View(d);
         }
 
         // POST: Results/Edit/5
@@ -86,7 +139,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Comment")] Result result)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Comment")] Result result, int Conductings, int Demands)
         {
             if (id != result.Id)
             {
@@ -97,6 +150,25 @@ namespace Lab.Controllers
             {
                 try
                 {
+                    var Conducting = await _context.Conductings.SingleOrDefaultAsync(x => x.Id == Conductings);
+                    if (Conducting != null)
+                    {
+                        result.Conducting = Conducting;
+                    }
+                    else
+                    {
+                        NotFound();
+                    }
+                    var Demand = await _context.Demands.SingleOrDefaultAsync(x => x.Id == Demands);
+                    if (Demand != null)
+                    {
+                        result.Demand = Demand;
+                    }
+                    else
+                    {
+                        NotFound();
+                    }
+
                     _context.Update(result);
                     await _context.SaveChangesAsync();
                 }
@@ -124,7 +196,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var result = await _context.Results
+            var result = await _context.Results.Include(x => x.Conducting).Include(x => x.Demand).Include(x => x.Conducting.Patient).Include(x => x.Conducting.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (result == null)
             {

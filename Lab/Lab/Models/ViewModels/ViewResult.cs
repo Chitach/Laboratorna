@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lab.Models.ViewModels
 {
-    public class ViewDemand: Lab.Models.Demand
+    public class ViewResult : Lab.Models.Result
     {
-        public IEnumerable<SelectListItem> Tests { get; set; }
+        public IEnumerable<SelectListItem> Conductings { get; set; }
+        public IEnumerable<SelectListItem> Demands { get; set; }
     }
 }
