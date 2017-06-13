@@ -26,6 +26,7 @@ namespace Lab.Controllers
                     BirthDate = DateTime.Now,
                     Address = "",
                 });
+                context.SaveChanges();
             }
         }
 
