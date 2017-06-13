@@ -10,13 +10,10 @@ using Lab.Models;
 
 namespace Lab.Controllers
 {
-    public class DemandsController : Controller
+    public class DemandsController : DefaultController
     {
-        private readonly ApplicationDbContext _context;
-
-        public DemandsController(ApplicationDbContext context)
+        public DemandsController(ApplicationDbContext context):base(context)
         {
-            _context = context;    
         }
 
         // GET: Demands

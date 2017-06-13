@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Lab.Models {
-	public class Patient {
+	public class Patient: User {
 		public int Id { get; set; }
 		public User User { get; set; }
 		public int Height { get; set; }

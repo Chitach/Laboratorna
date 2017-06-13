@@ -10,13 +10,10 @@ using Lab.Models;
 
 namespace Lab.Controllers
 {
-    public class ResultsController : Controller
+    public class ResultsController : DefaultController
     {
-        private readonly ApplicationDbContext _context;
-
-        public ResultsController(ApplicationDbContext context)
+        public ResultsController(ApplicationDbContext context):base(context)
         {
-            _context = context;    
         }
 
         // GET: Results

@@ -10,18 +10,16 @@ using Lab.Models;
 
 namespace Lab.Controllers
 {
-    public class ConductingsController : Controller
+    public class ConductingsController : DefaultController
     {
-        private readonly ApplicationDbContext _context;
-
-        public ConductingsController(ApplicationDbContext context)
+        public ConductingsController(ApplicationDbContext context):base(context)
         {
-            _context = context;    
         }
 
         // GET: Conductings
         public async Task<IActionResult> Index()
         {
+            
             return View(await _context.Conductings.ToListAsync());
         }
 

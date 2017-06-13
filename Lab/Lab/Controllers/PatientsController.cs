@@ -10,13 +10,10 @@ using Lab.Models;
 
 namespace Lab.Controllers
 {
-    public class PatientsController : Controller
+    public class PatientsController : DefaultController
     {
-        private readonly ApplicationDbContext _context;
-
-        public PatientsController(ApplicationDbContext context)
+        public PatientsController(ApplicationDbContext context):base(context)
         {
-            _context = context;    
         }
 
         // GET: Patients
@@ -54,7 +51,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Height,Weight,Antigen,BloodGroup")] Patient patient)
+        public async Task<IActionResult> Create([Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,UserName,Email,Password,IsMale")] Patient patient)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +83,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Height,Weight,Antigen,BloodGroup")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,UserName,Email,Password,IsMale")] Patient patient)
         {
             if (id != patient.Id)
             {

@@ -65,6 +65,13 @@ namespace Lab
 
             app.UseStaticFiles();
 
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = "Cookies",
+                LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 

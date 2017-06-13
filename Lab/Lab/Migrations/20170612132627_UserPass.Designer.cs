@@ -8,9 +8,10 @@ using Lab.Data;
 namespace Lab.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170612132627_UserPass")]
+    partial class UserPass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
@@ -58,6 +59,24 @@ namespace Lab.Migrations
                     b.ToTable("Demands");
                 });
 
+            modelBuilder.Entity("Lab.Models.Doctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("SpecializationId");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpecializationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Doctors");
+                });
+
             modelBuilder.Entity("Lab.Models.DoctorsPatiens", b =>
                 {
                     b.Property<int>("DoctorId");
@@ -69,6 +88,28 @@ namespace Lab.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("DoctorsPatiens");
+                });
+
+            modelBuilder.Entity("Lab.Models.Patient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Antigen");
+
+                    b.Property<int>("BloodGroup");
+
+                    b.Property<int>("Height");
+
+                    b.Property<int?>("UserId");
+
+                    b.Property<int>("Weight");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("Lab.Models.Result", b =>
@@ -126,9 +167,6 @@ namespace Lab.Migrations
 
                     b.Property<DateTime>("BirthDate");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
-
                     b.Property<string>("Email");
 
                     b.Property<string>("FirstName");
@@ -139,51 +177,9 @@ namespace Lab.Migrations
 
                     b.Property<string>("Password");
 
-                    b.Property<string>("UserName");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
-                });
-
-            modelBuilder.Entity("Lab.Models.Doctor", b =>
-                {
-                    b.HasBaseType("Lab.Models.User");
-
-                    b.Property<int?>("SpecializationId");
-
-                    b.Property<int?>("UserId");
-
-                    b.HasIndex("SpecializationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Doctor");
-
-                    b.HasDiscriminator().HasValue("Doctor");
-                });
-
-            modelBuilder.Entity("Lab.Models.Patient", b =>
-                {
-                    b.HasBaseType("Lab.Models.User");
-
-                    b.Property<int>("Antigen");
-
-                    b.Property<int>("BloodGroup");
-
-                    b.Property<int>("Height");
-
-                    b.Property<int?>("UserId");
-
-                    b.Property<int>("Weight");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Patient");
-
-                    b.HasDiscriminator().HasValue("Patient");
                 });
 
             modelBuilder.Entity("Lab.Models.Conducting", b =>
@@ -204,6 +200,17 @@ namespace Lab.Migrations
                         .HasForeignKey("TestId");
                 });
 
+            modelBuilder.Entity("Lab.Models.Doctor", b =>
+                {
+                    b.HasOne("Lab.Models.Specialization", "Specialization")
+                        .WithMany()
+                        .HasForeignKey("SpecializationId");
+
+                    b.HasOne("Lab.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Lab.Models.DoctorsPatiens", b =>
                 {
                     b.HasOne("Lab.Models.Patient", "Patient")
@@ -217,6 +224,13 @@ namespace Lab.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Lab.Models.Patient", b =>
+                {
+                    b.HasOne("Lab.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Lab.Models.Result", b =>
                 {
                     b.HasOne("Lab.Models.Conducting", "Conducting")
@@ -226,24 +240,6 @@ namespace Lab.Migrations
                     b.HasOne("Lab.Models.Demand", "Demand")
                         .WithMany()
                         .HasForeignKey("DemandId");
-                });
-
-            modelBuilder.Entity("Lab.Models.Doctor", b =>
-                {
-                    b.HasOne("Lab.Models.Specialization", "Specialization")
-                        .WithMany()
-                        .HasForeignKey("SpecializationId");
-
-                    b.HasOne("Lab.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Lab.Models.Patient", b =>
-                {
-                    b.HasOne("Lab.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
         }
     }
