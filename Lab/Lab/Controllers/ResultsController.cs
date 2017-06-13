@@ -21,7 +21,8 @@ namespace Lab.Controllers
         // GET: Results
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Results.ToListAsync());
+            var s = await _context.Results.ToListAsync();
+            return View(s);
         }
 
         // GET: Results/Details/5
