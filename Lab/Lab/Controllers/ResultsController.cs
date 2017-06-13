@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lab.Data;
 using Lab.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lab.Controllers
 {
+    [Authorize]
     public class ResultsController : DefaultController
     {
         public ResultsController(ApplicationDbContext context):base(context)

@@ -4,18 +4,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Lab.Data;
 
 namespace Lab.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : DefaultController
     {
-        [Authorize]
+        public HomeController(ApplicationDbContext context) : base(context)
+        {
+            if (!context.Doctors.Any())
+            {
+                context.Doctors.Add(new Models.Doctor()
+                {
+                    Email = "admin@admin.com",
+                    IsMale = true,
+                    Password = "admin",
+                    UserName = "admin",
+                    FirstName = "admin",
+                    Lastname = "admin",
+                    BirthDate = DateTime.Now,
+                    Address = "",
+                });
+            }
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        [Authorize(Roles = "Doctor")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
