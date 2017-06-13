@@ -33,11 +33,6 @@ namespace Lab.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.AddColumn<string>(
-                name: "UserName",
-                table: "Users",
-                nullable: true);
-
             migrationBuilder.AddColumn<int>(
                 name: "SpecializationId",
                 table: "Users",
@@ -151,10 +146,6 @@ namespace Lab.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Discriminator",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "UserName",
                 table: "Users");
 
             migrationBuilder.DropColumn(

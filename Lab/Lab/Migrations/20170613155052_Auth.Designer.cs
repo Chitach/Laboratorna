@@ -140,8 +140,6 @@ namespace Lab.Migrations
 
                     b.Property<string>("Password");
 
-                    b.Property<string>("UserName");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
