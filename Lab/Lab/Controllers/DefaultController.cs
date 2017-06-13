@@ -10,14 +10,10 @@ namespace Lab.Controllers
     public class DefaultController : Controller
     {
         protected readonly ApplicationDbContext _context;
-        protected readonly CustomAuthentication auth;
 
         public DefaultController(ApplicationDbContext context)
         {
             _context = context;
-            auth = new CustomAuthentication(context, HttpContext);
-            if (HttpContext != null)
-                ViewData["user"] = auth.GetSession();
         }
     }
 }

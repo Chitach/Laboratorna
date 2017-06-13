@@ -13,7 +13,7 @@ namespace Lab.Controllers
 {
     public class AccountController : DefaultController
     {
-        public AccountController(ApplicationDbContext context):base(context)
+        public AccountController(ApplicationDbContext context) : base(context)
         {
         }
         [HttpGet]
@@ -30,7 +30,7 @@ namespace Lab.Controllers
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
                 if (user != null)
                 {
-                    await Authenticate(model.Email); // аутентификация
+                    await Authenticate(model.Email, user is Doctor ? "Doctor" : "Patient"); // аутентификация
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -66,12 +66,13 @@ namespace Lab.Controllers
             return View(model);
         }*/
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(string userName, string userRole)
         {
             // создаем один claim
             var claims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, userRole)
                     };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,

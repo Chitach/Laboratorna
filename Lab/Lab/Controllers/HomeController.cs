@@ -15,6 +15,7 @@ namespace Lab.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Doctor")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
