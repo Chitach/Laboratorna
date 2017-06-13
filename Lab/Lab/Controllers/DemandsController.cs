@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Lab.Data;
 using Lab.Models;
 using Microsoft.AspNetCore.Authorization;
+using Lab.Models.ViewModels;
 
 namespace Lab.Controllers
 {
@@ -21,7 +22,7 @@ namespace Lab.Controllers
         // GET: Demands
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Demands.ToListAsync());
+            return View(await _context.Demands.Include(x => x.Test).ToListAsync());
         }
 
         // GET: Demands/Details/5
@@ -32,7 +33,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var demand = await _context.Demands
+            var demand = await _context.Demands.Include(x => x.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (demand == null)
             {
@@ -45,7 +46,15 @@ namespace Lab.Controllers
         // GET: Demands/Create
         public IActionResult Create()
         {
-            return View();
+            var d = new Lab.Models.ViewModels.ViewDemand()
+            {
+                Tests = _context.Tests.Select(x => new SelectListItem()
+                {
+                    Text = x.TestName,
+                    Value = x.Id.ToString()
+                })
+            };
+            return View(d);
         }
 
         // POST: Demands/Create
@@ -53,10 +62,19 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DemandName,LowerBorder,UpperBorder")] Demand demand)
+        public async Task<IActionResult> Create([Bind("Id,DemandName,LowerBorder,UpperBorder")] Demand demand, int Tests)
         {
             if (ModelState.IsValid)
             {
+                var Test = await _context.Tests.SingleOrDefaultAsync(x => x.Id == Tests);
+                if (Test != null)
+                {
+                    demand.Test = Test;
+                }
+                else
+                {
+                    NotFound();
+                }
                 _context.Add(demand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -72,12 +90,26 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var demand = await _context.Demands.SingleOrDefaultAsync(m => m.Id == id);
+            var demand = await _context.Demands.Include(x => x.Test).SingleOrDefaultAsync(m => m.Id == id);
             if (demand == null)
             {
                 return NotFound();
             }
-            return View(demand);
+            var d = new Lab.Models.ViewModels.ViewDemand()
+            {
+                DemandName = demand.DemandName,
+                Id = demand.Id,
+                LowerBorder = demand.LowerBorder,
+                Test = demand.Test,
+                TestId = demand.Test.Id.ToString(),
+                UpperBorder = demand.UpperBorder,
+                Tests = _context.Tests.Select(x => new SelectListItem()
+                {
+                    Text = x.TestName,
+                    Value = x.Id.ToString()
+                })
+            };
+            return View(d);
         }
 
         // POST: Demands/Edit/5
@@ -85,11 +117,17 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DemandName,LowerBorder,UpperBorder")] Demand demand)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DemandName,LowerBorder,UpperBorder")] Demand demand, int Tests)
         {
             if (id != demand.Id)
             {
                 return NotFound();
+            }
+
+            var Test = await _context.Tests.SingleOrDefaultAsync(x => x.Id == Tests);
+            if(Test != null)
+            {
+                demand.Test = Test;
             }
 
             if (ModelState.IsValid)
@@ -123,7 +161,7 @@ namespace Lab.Controllers
                 return NotFound();
             }
 
-            var demand = await _context.Demands
+            var demand = await _context.Demands.Include(x => x.Test)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (demand == null)
             {
