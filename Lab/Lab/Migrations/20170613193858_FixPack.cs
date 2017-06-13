@@ -17,10 +17,6 @@ namespace Lab.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "UserName",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "Users");
 
@@ -63,11 +59,6 @@ namespace Lab.Migrations
             migrationBuilder.DropColumn(
                 name: "Value",
                 table: "Results");
-
-            migrationBuilder.AddColumn<string>(
-                name: "UserName",
-                table: "Users",
-                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "UserId",
