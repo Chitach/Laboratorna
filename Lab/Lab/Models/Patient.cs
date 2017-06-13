@@ -2,8 +2,6 @@
 
 namespace Lab.Models {
 	public class Patient: User {
-		public int Id { get; set; }
-		public User User { get; set; }
 		public int Height { get; set; }
 		public int Weight { get; set; }
 		public int Antigen { get; set; }

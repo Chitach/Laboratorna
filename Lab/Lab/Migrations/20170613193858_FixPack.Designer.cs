@@ -8,8 +8,8 @@ using Lab.Data;
 namespace Lab.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170613155052_Auth")]
-    partial class Auth
+    [Migration("20170613193858_FixPack")]
+    partial class FixPack
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,11 +46,11 @@ namespace Lab.Migrations
 
                     b.Property<string>("DemandName");
 
-                    b.Property<int>("LowerBorder");
+                    b.Property<float>("LowerBorder");
 
                     b.Property<int?>("TestId");
 
-                    b.Property<int>("UpperBorder");
+                    b.Property<float>("UpperBorder");
 
                     b.HasKey("Id");
 
@@ -83,6 +83,8 @@ namespace Lab.Migrations
 
                     b.Property<int?>("DemandId");
 
+                    b.Property<float>("Value");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ConductingId");
@@ -109,9 +111,9 @@ namespace Lab.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("TestName");
+                    b.Property<string>("TestName");
 
-                    b.Property<DateTime>("Time");
+                    b.Property<int>("Time");
 
                     b.HasKey("Id");
 
@@ -153,11 +155,7 @@ namespace Lab.Migrations
 
                     b.Property<int?>("SpecializationId");
 
-                    b.Property<int?>("UserId");
-
                     b.HasIndex("SpecializationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Doctor");
 
@@ -174,11 +172,7 @@ namespace Lab.Migrations
 
                     b.Property<int>("Height");
 
-                    b.Property<int?>("UserId");
-
                     b.Property<int>("Weight");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Patient");
 
@@ -232,17 +226,6 @@ namespace Lab.Migrations
                     b.HasOne("Lab.Models.Specialization", "Specialization")
                         .WithMany()
                         .HasForeignKey("SpecializationId");
-
-                    b.HasOne("Lab.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Lab.Models.Patient", b =>
-                {
-                    b.HasOne("Lab.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
         }
     }

@@ -20,7 +20,6 @@ namespace Lab.Controllers
                     Email = "admin@admin.com",
                     IsMale = true,
                     Password = "admin",
-                    UserName = "admin",
                     FirstName = "admin",
                     Lastname = "admin",
                     BirthDate = DateTime.Now,

@@ -53,7 +53,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,UserName,Email,Password,IsMale")] Patient patient)
+        public async Task<IActionResult> Create([Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,Email,Password,IsMale")] Patient patient)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace Lab.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,UserName,Email,Password,IsMale")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Height,Weight,Antigen,BloodGroup,FirstName,Lastname,BirthDate,Address,Email,Password,IsMale")] Patient patient)
         {
             if (id != patient.Id)
             {
